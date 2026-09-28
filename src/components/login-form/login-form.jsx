@@ -1,51 +1,72 @@
 /* eslint-disable react-refresh/only-export-components */
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { loginFieldsSchema } from './scheme/login-fields-schema';
+import { authAsync } from '../../bff/api';
+import { useNavigate } from 'react-router';
 import { useState } from 'react';
 
 import styled from 'styled-components';
 
-const ApplicationFormContainer = ({ className }) => {
-	const [error, setError] = useState(null);
-	const onSubmitForm = (e) => {
-		console.log('отправка формы');
-		e.preventDefault();
+const LoginFormContainer = ({ className }) => {
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			email: '',
+			password: '',
+		},
+		resolver: yupResolver(loginFieldsSchema),
+		mode: 'onBlur',
+	});
+
+	const [isLoading, setIsLoading] = useState(false);
+	const [authError, setAuthError] = useState(null);
+
+	const navigate = useNavigate();
+
+	const onSubmitForm = ({ email, password }) => {
+		if (!email || !password) return;
+		setIsLoading(true);
+		authAsync(email, password); /*TODO .then((resp) =>{
+			console.log(resp)
+			if(resp)
+			navigate('/table_applications'))
+			} .*/
+		navigate('/table_applications');
 	};
+	const error = errors.email?.message || errors.password?.message || isLoading || !authError;
+
 	return (
-		<form className={className} onSubmit={onSubmitForm}>
-			<label htmlFor="name">
-				ФИО
-				<input type="text" name="name" id="name" />
+		<form className={className} onSubmit={handleSubmit(onSubmitForm)}>
+			<h1>Login</h1>
+			<label htmlFor="email">
+				Электронная почта
+				<input type="email" {...register('email')} id="email" />
 			</label>
-			<label htmlFor="contacts">
-				Телефон
-				<input
-					type="tel"
-					name="contacts"
-					id="contacts"
-					pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-					placeholder="+7(___)___-__-__"
-				/>
-			</label>
-			<label htmlFor="description">
-				Опишите вашу проблему
-				<textarea name="description" id="description" />
+			<label htmlFor="password">
+				Пароль
+				<input type="password" {...register('password')} id="password" />
 			</label>
 
-			{error && <span>{error}</span>}
-			<button type="submit" className="submit-button" disabled={false}>
-				Отправить заявку
+			{error && <span className="error-string">{error}</span>}
+			<button type="submit" className="submit-button" disabled={!!error}>
+				Войти
 			</button>
 		</form>
 	);
 };
 
-export const ApplicationForm = styled(ApplicationFormContainer)`
+export const LoginForm = styled(LoginFormContainer)`
 	width: min(100% - 32px, 620px);
 	margin: 60px auto;
 	padding: 32px;
 
 	display: flex;
 	flex-direction: column;
-	gap: 22px;
+	gap: 10px;
 
 	background: rgba(30, 32, 40, 0.72);
 	border: 1px solid rgba(255, 255, 255, 0.08);
@@ -86,14 +107,17 @@ export const ApplicationForm = styled(ApplicationFormContainer)`
 
 	& input,
 	& textarea {
-		width: 100%;
+		width: 70%;
 		box-sizing: border-box;
+		align-self: center;
 
 		padding: 14px 16px;
 
 		font: inherit;
 		font-size: 18px;
 		color: #f5f5f7;
+		letter-spacing: 1px;
+		text-align: center;
 
 		background: rgba(255, 255, 255, 0.055);
 		border: 1px solid rgba(255, 255, 255, 0.09);
@@ -147,8 +171,10 @@ export const ApplicationForm = styled(ApplicationFormContainer)`
 	}
 
 	& .submit-button {
-		margin-top: 4px;
+		margin: 40px 0 25px 0;
 		padding: 14px 20px;
+		width: 70%;
+		align-self: center;
 
 		border: 1px solid rgba(100, 180, 255, 0.35);
 		border-radius: 17px;
@@ -197,5 +223,12 @@ export const ApplicationForm = styled(ApplicationFormContainer)`
 				0 0 0 3px rgba(80, 170, 255, 0.15),
 				0 0 30px rgba(80, 170, 255, 0.25);
 		}
+		&:disabled {
+			background: #7a8983;
+			cursor: not-allowed;
+		}
+	}
+	.error-string {
+		margin: 10px 0;
 	}
 `;
