@@ -10,6 +10,5 @@ export const authAsync = (email, password) =>
 		if (!response.ok) {
 			throw new Error('Ошбика связи с сервером');
 		}
-		console.log(response);
 		return response.json();
 	});

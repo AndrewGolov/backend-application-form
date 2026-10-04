@@ -4,7 +4,6 @@ export const logout = () =>
 			if (!response.ok) {
 				throw new Error('Ошбика связи с сервером');
 			}
-			console.log(response);
 		})
 		.catch((e) => {
 			throw new Error('Ошибка при выполнении запроса', e);

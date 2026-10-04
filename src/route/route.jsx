@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router';
 import { App } from '../App.jsx';
-import { LoginForm, TableApplications } from '../components';
+import { LoginForm, TableApplications, ErrorComponent } from '../components';
 
 export const route = createBrowserRouter([
 	{ path: '/', element: <App /> },
@@ -8,6 +8,6 @@ export const route = createBrowserRouter([
 	{ path: '/table_applications', element: <TableApplications /> },
 	{
 		path: '*',
-		element: <h1>Страница в стадии разработки</h1>,
+		element: <ErrorComponent>Такая страница не найдена</ErrorComponent>,
 	},
 ]);

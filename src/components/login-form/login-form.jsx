@@ -32,8 +32,6 @@ const LoginFormContainer = ({ className }) => {
 		navigate('/table_applications');
 	};
 	const error = errors.email?.message || errors.password?.message;
-	console.log(Boolean(errors.email?.message), Boolean(errors.password?.message), Boolean(authError));
-	console.log(Boolean(error));
 
 	return (
 		<form className={className} onSubmit={handleSubmit(onSubmitForm)}>

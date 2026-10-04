@@ -1,27 +1,35 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useNavigate } from 'react-router';
-import { logout } from '../../bff/api';
-import styled from 'styled-components';
+import { logout, getApplications } from '../../bff/api';
 import { useEffect, useState } from 'react';
 import { Loader } from '../loader/Loader';
+import { ErrorComponent } from '../error-component/error-component';
+import styled from 'styled-components';
 
 const TableApplicationsContainer = ({ className }) => {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 	const onLogout = async () => {
 		await logout();
 		navigate('/');
 	};
 	useEffect(() => {
-		fetch('http://localhost:3000/applications_data', { credentials: 'include' })
-			.then((res) => res.json())
-			.then((responseData) => setData(responseData))
+		getApplications()
+			.then((responseData) => {
+				if (!Array.isArray(responseData)) {
+					setError(responseData);
+				} else {
+					setData(responseData);
+				}
+			})
 			.finally(() => setIsLoading(false));
 	}, []);
-	console.log(data);
+	console.log('data', data);
 
 	if (isLoading) return <Loader />;
+	if (error) return <ErrorComponent>{error}</ErrorComponent>;
 	return (
 		<div className={className}>
 			<h1>Table Applications</h1>

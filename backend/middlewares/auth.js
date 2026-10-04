@@ -13,7 +13,7 @@ function auth(req, res, next) {
 
 		next();
 	} catch (e) {
-		res.status(401).json('Для продолжения пройдите авторизацию заново')
+		res.status(401).json('Доступно только персоналу')
 	}
 }
 

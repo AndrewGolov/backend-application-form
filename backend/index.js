@@ -1,15 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
-
+const cors = require("cors");
 const app = express();
 const port = 3000
+
 const {KEY} = require('./constants')
 const {loginUser} = require("./users.controller");
-const cors = require("cors");
-
-const auth = require("./middlewares/auth");
 const getApplications = require('./applications.controller');
+const auth = require("./middlewares/auth");
+
 
 app.use(cors({
 	origin: 'http://localhost:5173',
@@ -27,16 +27,16 @@ app.post('/staff_login', async (req, res) => {
 		res.cookie('token', token, { httpOnly: true })
 		res.status(200).json({success:true})
 	} catch (e) {
-		console.log("ошибка:",e.message)
+		res.status(500).json({success:false, message: e.message})
 	}
 })
 app.get('/staff_logout', (req, res) => {
 	res.clearCookie('token',{ httpOnly: true })
 	res.status(200).json({success:true})
-	console.log('выполнен выход')
 })
 
 app.get('/applications_data', auth,  async (req, res) => {
+
 	const applications = await getApplications()
  	res.status(200).json(applications)
 })
