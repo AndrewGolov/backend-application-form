@@ -12,47 +12,43 @@ const LoginFormContainer = ({ className }) => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isDirty },
 	} = useForm({
 		defaultValues: {
 			email: '',
 			password: '',
 		},
 		resolver: yupResolver(loginFieldsSchema),
-		mode: 'onBlur',
+		mode: 'onChange',
 	});
 
-	const [isLoading, setIsLoading] = useState(false);
 	const [authError, setAuthError] = useState(null);
 
 	const navigate = useNavigate();
 
-	const onSubmitForm = ({ email, password }) => {
+	const onSubmitForm = async ({ email, password }) => {
 		if (!email || !password) return;
-		setIsLoading(true);
-		authAsync(email, password); /*TODO .then((resp) =>{
-			console.log(resp)
-			if(resp)
-			navigate('/table_applications'))
-			} .*/
+		await authAsync(email, password);
 		navigate('/table_applications');
 	};
-	const error = errors.email?.message || errors.password?.message || isLoading || !authError;
+	const error = errors.email?.message || errors.password?.message;
+	console.log(Boolean(errors.email?.message), Boolean(errors.password?.message), Boolean(authError));
+	console.log(Boolean(error));
 
 	return (
 		<form className={className} onSubmit={handleSubmit(onSubmitForm)}>
 			<h1>Login</h1>
 			<label htmlFor="email">
 				Электронная почта
-				<input type="email" {...register('email')} id="email" />
+				<input type="email" {...register('email')} id="email" name="email" />
 			</label>
 			<label htmlFor="password">
 				Пароль
-				<input type="password" {...register('password')} id="password" />
+				<input type="password" {...register('password')} id="password" name="password" autoComplete="on" />
 			</label>
 
 			{error && <span className="error-string">{error}</span>}
-			<button type="submit" className="submit-button" disabled={!!error}>
+			<button type="submit" className="submit-button" disabled={error || !isDirty}>
 				Войти
 			</button>
 		</form>

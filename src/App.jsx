@@ -9,7 +9,7 @@ const AppContainer = ({ className }) => {
 		<div className={className}>
 			<ApplicationForm />
 
-			<Link to={'/staff-login'}>Для сотрудников</Link>
+			<Link to={'/staff_login'}>Для сотрудников</Link>
 		</div>
 	);
 };

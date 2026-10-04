@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "data-table-applications",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "serve": "nodemon index.js"
+  },
+  "keywords": [
+    "node",
+    "javascript"
+  ],
+  "author": "Andrew Golov <telegram@andre_g_life>",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.19.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.6",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "validator": "^13.11.0",
+    "yargs": "^17.2.1"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.4",
+    "nodemon": "^2.0.14"
+  }
+}
