@@ -10,7 +10,6 @@ const {loginUser} = require("./users.controller");
 const getApplications = require('./applications.controller');
 const auth = require("./middlewares/auth");
 
-
 app.use(cors({
 	origin: 'http://localhost:5173',
 	credentials: true
@@ -36,7 +35,6 @@ app.get('/staff_logout', (req, res) => {
 })
 
 app.get('/applications_data', auth,  async (req, res) => {
-
 	const applications = await getApplications()
  	res.status(200).json(applications)
 })

@@ -4,10 +4,11 @@ import { logout, getApplications } from '../../bff/api';
 import { useEffect, useState } from 'react';
 import { Loader } from '../loader/Loader';
 import { ErrorComponent } from '../error-component/error-component';
+import { Table } from './components';
 import styled from 'styled-components';
 
 const TableApplicationsContainer = ({ className }) => {
-	const [data, setData] = useState([]);
+	const [dataApplication, setDataApplication] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
@@ -21,19 +22,23 @@ const TableApplicationsContainer = ({ className }) => {
 				if (!Array.isArray(responseData)) {
 					setError(responseData);
 				} else {
-					setData(responseData);
+					setDataApplication(responseData);
 				}
 			})
 			.finally(() => setIsLoading(false));
 	}, []);
-	console.log('data', data);
 
 	if (isLoading) return <Loader />;
 	if (error) return <ErrorComponent>{error}</ErrorComponent>;
+
 	return (
 		<div className={className}>
-			<h1>Table Applications</h1>
-			<button onClick={onLogout}>Logout</button>
+			<header>
+				<button onClick={onLogout} className="logout-button">
+					Logout
+				</button>
+			</header>
+			<Table applications={dataApplication} />
 		</div>
 	);
 };
