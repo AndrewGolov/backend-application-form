@@ -15,4 +15,6 @@ const loginUser = async (email, password) => {
 	}
 	return jwt.sign({ email }, JWT_KEY, { expiresIn: '24h' })
 }
+
+
 module.exports = {loginUser}

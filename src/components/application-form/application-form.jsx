@@ -1,37 +1,66 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { createApplication } from '../../bff/api';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { applicationFormScheme } from './scheme/application-form-scheme';
 
 import styled from 'styled-components';
 
 const ApplicationFormContainer = ({ className }) => {
 	const [error, setError] = useState(null);
-	const onSubmitForm = (e) => {
-		console.log('отправка формы');
-		e.preventDefault();
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			name: '',
+			contacts: '',
+			description: '',
+		},
+		resolver: yupResolver(applicationFormScheme),
+		mode: 'onChange',
+	});
+
+	const onChangeContacts = (e) => {
+		const value = e.target.value.replace(/\D/g, '');
+		setValue('contacts', value);
 	};
+
+	const onSubmitForm = async ({ name, contacts, description }) => {
+		try {
+			await createApplication({
+				name,
+				contacts,
+				description,
+			});
+			setError(null);
+		} catch (e) {
+			console.error(e);
+			setError('Ошибка при отправке данных');
+		}
+	};
+
+	const validationError = errors.name?.message || errors.contacts?.message || errors.description?.message || error;
 	return (
-		<form className={className} onSubmit={onSubmitForm}>
+		<form className={className} onSubmit={handleSubmit(onSubmitForm)}>
 			<label htmlFor="name">
 				ФИО
-				<input type="text" name="name" id="name" />
+				<input type="text" {...register('name')} id="name" />
 			</label>
 			<label htmlFor="contacts">
 				Телефон
-				<input
-					type="tel"
-					name="contacts"
-					id="contacts"
-					pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-					placeholder="+7(___)___-__-__"
-				/>
+				<input type="tel" {...register('contacts')} id="contacts" onChange={onChangeContacts} />
 			</label>
 			<label htmlFor="description">
 				Опишите вашу проблему
-				<textarea name="description" id="description" />
+				<textarea {...register('description')} id="description" />
 			</label>
 
-			{error && <span>{error}</span>}
-			<button type="submit" className="submit-button" disabled={false}>
+			{validationError && <span>{validationError}</span>}
+			<button type="submit" className="submit-button" disabled={!validationError}>
 				Отправить заявку
 			</button>
 		</form>

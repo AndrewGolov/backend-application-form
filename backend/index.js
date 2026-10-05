@@ -7,7 +7,7 @@ const port = 3000
 
 const {KEY} = require('./constants')
 const {loginUser} = require("./users.controller");
-const getApplications = require('./applications.controller');
+const {getApplications,createApplication} = require('./applications.controller');
 const auth = require("./middlewares/auth");
 
 app.use(cors({
@@ -16,9 +16,20 @@ app.use(cors({
 }));
 app.use(express.json())
 app.use(cookieParser())
-app.use(express.urlencoded({
-	extended: true
-}))
+
+app.post('/post_application', async (req, res) => {
+	console.log('body request:',req.body)
+	try {
+		const application = await createApplication(req.body.name, req.body.contacts, req.body.description);
+		console.log(application);
+		res.status(200).json(application);
+	}catch(e){
+		console.error(e);
+		res.status(500).json('Ошибка сервера, не удалось оставить заявку')
+	}
+
+
+})
 
 app.post('/staff_login', async (req, res) => {
 	try {
@@ -26,17 +37,26 @@ app.post('/staff_login', async (req, res) => {
 		res.cookie('token', token, { httpOnly: true })
 		res.status(200).json({success:true})
 	} catch (e) {
-		res.status(500).json({success:false, message: e.message})
+		res.status(401).json({success:false, message: e.message})
 	}
 })
+
 app.get('/staff_logout', (req, res) => {
 	res.clearCookie('token',{ httpOnly: true })
 	res.status(200).json({success:true})
 })
 
+app.get('/staff_info', auth, (req, res) => {
+	res.status(200).json(req.user)
+})
+
 app.get('/applications_data', auth,  async (req, res) => {
+	try {
 	const applications = await getApplications()
  	res.status(200).json(applications)
+	} catch (e) {
+		res.status(500).json({success:false, message: e.message})
+	}
 })
 
 mongoose.connect(`mongodb+srv://andrewgolov90_db_user:${KEY}@sempdb.64bjbh5.mongodb.net/medical_bd`).then(() => {

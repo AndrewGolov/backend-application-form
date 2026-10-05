@@ -7,11 +7,12 @@ function auth(req, res, next) {
 	try {
 		const verifyResult = jwt.verify(token, JWT_KEY)
 
-		req.email = {
+		req.user = {
 			email: verifyResult.email
 		}
 
 		next();
+
 	} catch (e) {
 		res.status(401).json('Доступно только персоналу')
 	}

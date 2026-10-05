@@ -28,9 +28,15 @@ const LoginFormContainer = ({ className }) => {
 
 	const onSubmitForm = async ({ email, password }) => {
 		if (!email || !password) return;
-		await authAsync(email, password);
-		navigate('/table_applications');
+		try {
+			await authAsync(email, password);
+			navigate('/table_applications');
+			setAuthError(null);
+		} catch (error) {
+			setAuthError('Ошибка при авторизации. Логин или пароль неверны.', error);
+		}
 	};
+
 	const error = errors.email?.message || errors.password?.message;
 
 	return (
@@ -38,14 +44,14 @@ const LoginFormContainer = ({ className }) => {
 			<h1>Login</h1>
 			<label htmlFor="email">
 				Электронная почта
-				<input type="email" {...register('email')} id="email" name="email" />
+				<input type="email" {...register('email')} id="email" />
 			</label>
 			<label htmlFor="password">
 				Пароль
-				<input type="password" {...register('password')} id="password" name="password" autoComplete="on" />
+				<input type="password" {...register('password')} id="password" autoComplete="on" />
 			</label>
 
-			{error && <span className="error-string">{error}</span>}
+			{error || (authError && <span className="error-string">{error || authError}</span>)}
 			<button type="submit" className="submit-button" disabled={error || !isDirty}>
 				Войти
 			</button>
