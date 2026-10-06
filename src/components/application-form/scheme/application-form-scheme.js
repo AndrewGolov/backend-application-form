@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 export const applicationFormScheme = yup.object().shape({
-	name: yup.string().required('Введите имя'),
+	name: yup.string().trim().required('Введите имя'),
 	contacts: yup
 		.string()
 		.required('Введите телефон')
@@ -9,6 +9,7 @@ export const applicationFormScheme = yup.object().shape({
 
 	description: yup
 		.string()
+		.trim()
 		.required('Введите описание проблемы')
 		.max(300, 'Описание проблемы не должно превышать 300 символов'),
 });

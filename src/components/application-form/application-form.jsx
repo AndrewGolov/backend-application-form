@@ -11,6 +11,7 @@ import styled from 'styled-components';
 const ApplicationFormContainer = ({ className }) => {
 	const [error, setError] = useState(null);
 	const {
+		reset,
 		register,
 		handleSubmit,
 		control,
@@ -31,8 +32,11 @@ const ApplicationFormContainer = ({ className }) => {
 				name,
 				contacts,
 				description,
+			}).then((data) => {
+				console.log('Заявка успешно отправлена:', data);
 			});
 			setError(null);
+			reset();
 		} catch (e) {
 			console.error(e);
 			setError('Ошибка при отправке данных');
@@ -40,6 +44,7 @@ const ApplicationFormContainer = ({ className }) => {
 	};
 
 	const validationError = errors.name?.message || errors.contacts?.message || errors.description?.message || error;
+
 	return (
 		<form className={className} onSubmit={handleSubmit(onSubmitForm)}>
 			<label htmlFor="name">
@@ -62,7 +67,7 @@ const ApplicationFormContainer = ({ className }) => {
 			</label>
 
 			{validationError && <span>{validationError}</span>}
-			<button type="submit" className="submit-button" disabled={!validationError}>
+			<button type="submit" className="submit-button" disabled={!!validationError}>
 				Отправить заявку
 			</button>
 		</form>
@@ -227,6 +232,14 @@ export const ApplicationForm = styled(ApplicationFormContainer)`
 			box-shadow:
 				0 0 0 3px rgba(80, 170, 255, 0.15),
 				0 0 30px rgba(80, 170, 255, 0.25);
+		}
+		&:disabled {
+			cursor: not-allowed;
+			background: rgba(130, 130, 130, 0.78);
+			border-color: rgba(100, 180, 255, 0.15);
+			box-shadow:
+				0 0 0 rgba(80, 160, 255, 0),
+				0 0 0 rgba(80, 160, 255, 0);
 		}
 	}
 `;
