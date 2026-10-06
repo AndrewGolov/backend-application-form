@@ -33,6 +33,7 @@ const ApplicationFormContainer = ({ className }) => {
 		setIsDisabled(true);
 		try {
 			await createApplication({
+				created_at: new Date(),
 				name,
 				contacts,
 				description,

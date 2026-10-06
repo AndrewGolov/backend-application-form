@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const ApplicationsScheme = mongoose.Schema({
-	created_at: {type:Date, default: Date.now},
+	created_at: {type:Date},
 	name: {type:String, required:true},
 	contacts:{type:String, required:true},
 	description:{type:String, required:true},

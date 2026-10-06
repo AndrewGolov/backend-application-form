@@ -18,16 +18,13 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.post('/post_application', async (req, res) => {
-	console.log('body request:',req.body)
 	try {
-		const application = await createApplication(req.body.name, req.body.contacts, req.body.description);
+		const application = await createApplication(req.body.created_at,req.body.name, req.body.contacts, req.body.description);
 		res.status(200).json(application);
 	}catch(e){
 		console.error(e);
 		res.status(500).json('Ошибка сервера, не удалось оставить заявку')
 	}
-
-
 })
 
 app.post('/staff_login', async (req, res) => {
