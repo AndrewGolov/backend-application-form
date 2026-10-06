@@ -1,8 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { createApplication } from '../../bff/api';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { IMaskInput } from 'react-imask';
 import { applicationFormScheme } from './scheme/application-form-scheme';
 
 import styled from 'styled-components';
@@ -12,7 +13,7 @@ const ApplicationFormContainer = ({ className }) => {
 	const {
 		register,
 		handleSubmit,
-		setValue,
+		control,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -23,11 +24,6 @@ const ApplicationFormContainer = ({ className }) => {
 		resolver: yupResolver(applicationFormScheme),
 		mode: 'onChange',
 	});
-
-	const onChangeContacts = (e) => {
-		const value = e.target.value.replace(/\D/g, '');
-		setValue('contacts', value);
-	};
 
 	const onSubmitForm = async ({ name, contacts, description }) => {
 		try {
@@ -52,7 +48,13 @@ const ApplicationFormContainer = ({ className }) => {
 			</label>
 			<label htmlFor="contacts">
 				Телефон
-				<input type="tel" {...register('contacts')} id="contacts" onChange={onChangeContacts} />
+				<Controller
+					name="contacts"
+					control={control}
+					render={({ field }) => (
+						<IMaskInput type="tel" mask="+{7} (000) 000-00-00" {...field} id="contacts" />
+					)}
+				/>
 			</label>
 			<label htmlFor="description">
 				Опишите вашу проблему
