@@ -21,7 +21,6 @@ app.post('/post_application', async (req, res) => {
 	console.log('body request:',req.body)
 	try {
 		const application = await createApplication(req.body.name, req.body.contacts, req.body.description);
-		console.log(application);
 		res.status(200).json(application);
 	}catch(e){
 		console.error(e);

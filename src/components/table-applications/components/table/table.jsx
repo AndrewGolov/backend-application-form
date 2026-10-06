@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 
 const TableContainer = ({ className, applications }) => {
-	const formatDate = (timestamp) => new Date(Number(timestamp)).toLocaleString('ru-RU');
+	const formatDate = (date) => new Date(date).toLocaleString();
 
 	if (!Array.isArray(applications) || applications.length === 0) {
 		return <div className={className}>Нет данных для отображения</div>;

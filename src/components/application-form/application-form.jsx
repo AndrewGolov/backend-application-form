@@ -5,11 +5,14 @@ import { createApplication } from '../../bff/api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { IMaskInput } from 'react-imask';
 import { applicationFormScheme } from './scheme/application-form-scheme';
-
+import { SuccessModal } from '../success-modal/success-modal';
 import styled from 'styled-components';
 
 const ApplicationFormContainer = ({ className }) => {
 	const [error, setError] = useState(null);
+	const [isDisabled, setIsDisabled] = useState(false);
+	const [isSuccessfully, setIsSuccessfully] = useState(false);
+
 	const {
 		reset,
 		register,
@@ -27,13 +30,15 @@ const ApplicationFormContainer = ({ className }) => {
 	});
 
 	const onSubmitForm = async ({ name, contacts, description }) => {
+		setIsDisabled(true);
 		try {
 			await createApplication({
 				name,
 				contacts,
 				description,
 			}).then((data) => {
-				console.log('Заявка успешно отправлена:', data);
+				setIsDisabled(false);
+				setIsSuccessfully(true);
 			});
 			setError(null);
 			reset();
@@ -46,31 +51,34 @@ const ApplicationFormContainer = ({ className }) => {
 	const validationError = errors.name?.message || errors.contacts?.message || errors.description?.message || error;
 
 	return (
-		<form className={className} onSubmit={handleSubmit(onSubmitForm)}>
-			<label htmlFor="name">
-				ФИО
-				<input type="text" {...register('name')} id="name" />
-			</label>
-			<label htmlFor="contacts">
-				Телефон
-				<Controller
-					name="contacts"
-					control={control}
-					render={({ field }) => (
-						<IMaskInput type="tel" mask="+{7} (000) 000-00-00" {...field} id="contacts" />
-					)}
-				/>
-			</label>
-			<label htmlFor="description">
-				Опишите вашу проблему
-				<textarea {...register('description')} id="description" />
-			</label>
+		<>
+			<form className={className} onSubmit={handleSubmit(onSubmitForm)}>
+				<label htmlFor="name">
+					ФИО
+					<input type="text" {...register('name')} id="name" />
+				</label>
+				<label htmlFor="contacts">
+					Телефон
+					<Controller
+						name="contacts"
+						control={control}
+						render={({ field }) => (
+							<IMaskInput type="tel" mask="+{7} (000) 000-00-00" {...field} id="contacts" />
+						)}
+					/>
+				</label>
+				<label htmlFor="description">
+					Опишите вашу проблему
+					<textarea {...register('description')} id="description" />
+				</label>
 
-			{validationError && <span>{validationError}</span>}
-			<button type="submit" className="submit-button" disabled={!!validationError}>
-				Отправить заявку
-			</button>
-		</form>
+				{validationError && <span>{validationError}</span>}
+				<button type="submit" className="submit-button" disabled={!!validationError || isDisabled}>
+					Отправить заявку
+				</button>
+			</form>
+			{isSuccessfully && <SuccessModal isOpen={isSuccessfully} onClose={() => setIsSuccessfully(false)} />}
+		</>
 	);
 };
 
