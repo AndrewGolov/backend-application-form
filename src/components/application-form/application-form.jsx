@@ -36,7 +36,7 @@ const ApplicationFormContainer = ({ className }) => {
 				name,
 				contacts,
 				description,
-			}).then((data) => {
+			}).then(() => {
 				setIsDisabled(false);
 				setIsSuccessfully(true);
 			});
