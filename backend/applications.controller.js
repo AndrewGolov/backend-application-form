@@ -1,6 +1,6 @@
 const db_applications = require('./models/db_applications')
 
-const getApplications = async (searchValue,sortValue) => {
+const getApplications = async (searchValue,sortValue,page) => {
 	let sortOrder;
 		switch(sortValue){
 			case'created_at_desc':
@@ -24,8 +24,12 @@ const getApplications = async (searchValue,sortValue) => {
 			{ description: { $regex: searchValue, $options: 'i' } },
 		],
 	} : {};
-
-		return db_applications.find(filterData).sort(sortOrder);
+	const limit = 10
+	const totalCountData = await db_applications.countDocuments(filterData);
+	const totalPages = Math.ceil(totalCountData / limit)
+	const skipCount = (page - 1) * limit;
+	const applications_data = await db_applications.find(filterData).sort(sortOrder).skip(skipCount).limit(limit);
+	return {applications_data,totalPages}
 }
 
 	const createApplication = async (created_at,name,contacts,description) =>
