@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import styled from 'styled-components';
 
-const TableContainer = ({ className, applications }) => {
+const TableContainer = ({ className, applications, onSortByName, onSortByDate }) => {
 	const formatDate = (date) => new Date(date).toLocaleString();
 
 	if (!Array.isArray(applications) || applications.length === 0) {
@@ -13,8 +13,18 @@ const TableContainer = ({ className, applications }) => {
 			<table>
 				<thead>
 					<tr>
-						<th>Дата отправки</th>
-						<th>ФИО</th>
+						<th>
+							<button className="sort-button" type="button" onClick={onSortByDate}>
+								<span>Дата отправки</span>
+								<span className="sort-icon">↕</span>
+							</button>
+						</th>
+						<th>
+							<button className="sort-button" type="button" onClick={onSortByName}>
+								<span>ФИО</span>
+								<span className="sort-icon">↕</span>
+							</button>
+						</th>
 						<th>Телефон</th>
 						<th>Проблема</th>
 					</tr>
@@ -94,5 +104,50 @@ export const Table = styled(TableContainer)`
 	th:last-child,
 	td:last-child {
 		width: auto;
+	}
+
+	.sort-button {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+
+		padding: 0;
+
+		border: none;
+		background: transparent;
+		color: #d5d6db;
+
+		font: inherit;
+		font-size: 15px;
+		font-weight: 500;
+
+		cursor: pointer;
+
+		transition:
+			color 0.2s ease,
+			text-shadow 0.2s ease;
+	}
+
+	.sort-button:hover {
+		color: #00ff9d;
+		text-shadow: 0 0 8px rgba(0, 255, 157, 0.35);
+	}
+
+	.sort-button:active {
+		color: #00d985;
+	}
+
+	.sort-icon {
+		font-size: 14px;
+		color: #777b86;
+		transition:
+			color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.sort-button:hover .sort-icon {
+		color: #00ff9d;
 	}
 `;

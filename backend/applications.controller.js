@@ -1,6 +1,22 @@
 const db_applications = require('./models/db_applications')
 
-const getApplications = async (searchValue) => {
+const getApplications = async (searchValue,sortValue) => {
+	let sortOrder;
+		switch(sortValue){
+			case'created_at_desc':
+				sortOrder = {created_at:-1};
+				break;
+			case 'created_at_asc':
+				sortOrder = {created_at:1};
+				break;
+			case 'name_desc':
+				sortOrder = {name:-1};
+				break;
+			case 'name_asc':
+				sortOrder = {name:1};
+				break;
+	}
+
 	let filterData = searchValue ? {
 		$or: [
 			{ name: { $regex: searchValue, $options: 'i' } },
@@ -9,7 +25,7 @@ const getApplications = async (searchValue) => {
 		],
 	} : {};
 
-	return await db_applications.find(filterData);
+		return db_applications.find(filterData).sort(sortOrder);
 }
 
 	const createApplication = async (created_at,name,contacts,description) =>
