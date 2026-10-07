@@ -6,7 +6,6 @@ import { useDebounce } from '../../hooks';
 import { Loader } from '../loader/Loader';
 import { ErrorComponent } from '../error-component/error-component';
 import { Table } from './components';
-
 import styled from 'styled-components';
 
 const TableApplicationsContainer = ({ className }) => {
