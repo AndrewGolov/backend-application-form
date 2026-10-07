@@ -10,8 +10,6 @@ const TableContainer = ({ className, applications }) => {
 
 	return (
 		<div className={className}>
-			<h1>Заявки с формы</h1>
-
 			<table>
 				<thead>
 					<tr>
@@ -42,14 +40,6 @@ export const Table = styled(TableContainer)`
 	max-width: 1100px;
 	margin: 0 auto;
 	padding: 40px 24px;
-
-	h1 {
-		margin: 0 0 30px;
-		color: #fff;
-		font-size: 28px;
-		font-weight: 500;
-		text-align: center;
-	}
 
 	table {
 		width: 100%;

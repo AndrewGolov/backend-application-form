@@ -48,7 +48,7 @@ app.get('/staff_info', auth, (req, res) => {
 
 app.get('/applications_data', auth,  async (req, res) => {
 	try {
-	const applications = await getApplications()
+	const applications = await getApplications(req.query.search)
  	res.status(200).json(applications)
 	} catch (e) {
 		res.status(500).json({success:false, message: e.message})
